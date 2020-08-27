@@ -30,6 +30,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
+      "@middlewares": path.resolve(__dirname, "src/middlewares/"),
       "@services": path.resolve(__dirname, "src/services/"),
       "@models": path.resolve(__dirname, "src/models/"),
       "@shared": path.resolve(__dirname, "src/shared/"),
@@ -37,7 +38,7 @@ module.exports = {
       "@controllers": path.resolve(__dirname, "src/controllers/"),
       "@daos": path.resolve(__dirname, "src/daos/"),
       "@helpers": path.resolve(__dirname, "src/helpers/")
-    } 
+    }
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin(),

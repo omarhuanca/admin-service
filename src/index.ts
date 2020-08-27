@@ -9,8 +9,8 @@ import mongoose from 'mongoose';
 
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
-import { handleError } from '@helpers/ErrorHandler'
-import ErrorHandler from '@helpers/ErrorHandler/index';
+import { handleError } from '@helpers/errorHandler'
+import ErrorHandler from '@helpers/errorHandler/index';
 
 // Init express
 const app = express();
