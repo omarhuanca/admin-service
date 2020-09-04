@@ -4,49 +4,47 @@ import logger from '@shared/Logger';
 
 class UserDao {
 
-  public async findAllUsers(criteria: any, projection: any = {}, options: any = {}) {
+  public async findAll(criteria: any, projection: any = {}, options: any = {}) {
     try {
       return await UserModel.find(criteria, projection, options);
     } catch (error) {
-      logger.info('TCL: findAllUser -> error', error);
+      logger.info('TCL: findAll -> error', error);
       throw error.statusCode ? error : new ErrorHandler(500, `${error.name} ${error.errmsg}`);
     }
   }
 
-  public async findUser(criteria: any, projection: any = {}, options: any = {}) {
+  public async findOne(criteria: any, projection: any = {}, options: any = {}) {
     try {
       return await UserModel.findOne(criteria, projection, options);
     } catch (error) {
-      logger.info('TCL: findUser -> error', error);
-      throw error.statusCode ? error : new ErrorHandler(500, `${error.name} ${error.errmsg}`);
+      logger.info('TCL: findOne -> error', error);
+      throw new ErrorHandler(404, 'Object_NOT_FOUND');
     }
   }
 
-  public async createUser(user: IBaseUser) {
+  public async create(user: IBaseUser) {
     try {
       return await UserModel.create(user);
     } catch (error) {
-      logger.info(error)
-      throw new ErrorHandler(500, `${error.name} ${error.message}`);
+      logger.info('TCL: create -> error', error);
+      throw error.statusCode ? error : new ErrorHandler(500, `${error.name} ${error.message}`);
     }
   }
 
-  public async updateUser(criteria: any, dataToUpdate: any = {}, options: any = {}) {
+  public async update(criteria: any, dataToUpdate: any = {}, options: any = {}) {
     try {
-      const record = await UserModel.findOneAndUpdate(criteria, dataToUpdate, options);
-      if (!record) throw new ErrorHandler(404, 'Object_NOT_FOUND');
-      return record;
+      return await UserModel.findOneAndUpdate(criteria, dataToUpdate, options);
     } catch (error) {
+      logger.info('TCL: update -> error', error);
       throw error.statusCode ? error : new ErrorHandler(500, `${error.name} ${error.errmsg}`);
     }
   }
 
-  public async deleteUser(criteria: any, dataToUpdate: any = {}) {
+  public async delete(criteria: any, dataToUpdate: any = {}) {
     try {
-      const record = await UserModel.findOneAndUpdate(criteria, dataToUpdate);
-      if (!record) throw new ErrorHandler(404, 'Object_NOT_FOUND');
-      return record;
+      return await UserModel.findOneAndUpdate(criteria, dataToUpdate);
     } catch (error) {
+      logger.info('TCL: delete -> error', error);
       throw error.statusCode ? error : new ErrorHandler(500, `${error.name} ${error.errmsg}`);
     }
   }
