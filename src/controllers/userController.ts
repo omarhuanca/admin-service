@@ -12,81 +12,83 @@ interface IRequest extends Request {
 }
 
 const omitKeys = ['createdAt', 'updatedAt'];
-const userService = new UserService();
+const service = new UserService();
 const successHandler = new SuccessHandler();
 
-export const getAllUsers = async (req: IRequest, res: Response, next: NextFunction) => {
-  const defaultStatus = get(req, 'query.status', true);
-  const criteria = {
-    status: defaultStatus
-  };
-
+export const getAll = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const data = await userService.findAllUsers(criteria);
-    successHandler.handleSuccess(200, 'User list', res, next, data);
+    const defaultStatus = get(req, 'query.status', true);
+    const criteria = {
+      status: defaultStatus
+    };
+    const data = await service.findAll(criteria);
+
+    successHandler.handleSuccess(200, 'fetch', res, next, data);
   } catch (error) {
-    logger.info('ERROR: controller -> getAllUsers', error);
-    next(new ErrorHandler(500, error));
+    logger.info('ERROR: controller -> getAll', error);
+    next(new ErrorHandler(error.statusCode, error.message));
   }
 };
 
-export const getUser = async (req: IRequest, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const criteria = {
-    _id: id,
-  };
-
+export const getOne = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const data = await userService.findUser(criteria);
-    successHandler.handleSuccess(200, 'User fetch', res, next, omit(data, omitKeys));
+    const { id } = req.params;
+    const criteria = {
+      _id: id,
+    };
+    const data = await service.findOne(criteria);
+
+    successHandler.handleSuccess(200, 'got', res, next, omit(data, omitKeys));
   } catch(error) {
-    logger.info('ERROR: controller -> getUser', error);
-    next(new ErrorHandler(500, error));
+    logger.info('ERROR: controller -> getOne', error);
+    next(new ErrorHandler(error.statusCode, error.message));
   }
 };
 
-export const createUser = async (req: IRequest, res: Response, next: NextFunction) => {
-  const user: IBaseUser = req.body as IBaseUser;
+export const create = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const data = await userService.createUser(user);
-    successHandler.handleSuccess(200, 'User created', res, next, omit(data, omitKeys));
+    const user: IBaseUser = req.body as IBaseUser;
+    const data = await service.create(user);
+
+    successHandler.handleSuccess(200, 'created', res, next, omit(data, omitKeys));
   } catch(error) {
-    logger.info('ERROR: controller -> createUser', error);
-    next(new ErrorHandler(500, error));
+    logger.info('ERROR: controller -> create', error);
+    next(new ErrorHandler(error.statusCode, error.message));
   }
 };
 
-export const updateUser = async (req: IRequest, res: Response, next: NextFunction) => {
-  const update = req.body;
-  const { id } = req.params;
-  const criteria = {
-    _id: id,
-  };
-
+export const update = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const data = await userService.updateUser(criteria, update);
-    successHandler.handleSuccess(200, 'User updated', res, next, omit(data, omitKeys));
-  } catch (error) {
-    logger.info('ERROR: controller -> updateUser', error);
-    next(new ErrorHandler(500, error));
-  }
-};
+    const updateObject = req.body;
+    const { id } = req.params;
+    const criteria = {
+      _id: id,
+    };
+    const object = await service.findOne(criteria);
 
-export const deleteUser = async (req: IRequest, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const criteria = {
-    _id: id
-  };
-
-  try {
-    const data = await userService.deleteUser(criteria);
-    if (!data) {
-      throw new ErrorHandler(404, 'Object_NOT_FOUND');
-    } else {
-      successHandler.handleSuccess(200, 'User deleted', res, next, omit(data, omitKeys));
+    if (object) {
+      const data = await service.update(criteria, updateObject);
+      successHandler.handleSuccess(200, 'updated', res, next, omit(data, omitKeys));
     }
   } catch (error) {
-    logger.info('ERROR: controller -> deleteUser', error);
-    next(new ErrorHandler(500, error));
+    logger.info('ERROR: controller -> update', error);
+    next(new ErrorHandler(error.statusCode, error.message));
+  }
+};
+
+export const softDelete = async (req: IRequest, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const criteria = {
+      _id: id,
+    };
+    const object = await service.findOne(criteria);
+    if (object) {
+      const data = await service.delete(criteria);
+      successHandler.handleSuccess(200, 'deleted', res, next, omit(data, omitKeys));
+    }
+  } catch (error) {
+    logger.info('ERROR: controller -> delete', error);
+    next(new ErrorHandler(error.statusCode, error.message));
   }
 };

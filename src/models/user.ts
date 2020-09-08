@@ -7,6 +7,7 @@ export interface IBaseUser extends Document {
   tokenPassword: string,
   fullname: string,
   address: string,
+  phoneNumber: string,
 };
 
 export interface IUser extends IBaseUser {
@@ -22,6 +23,7 @@ const UserSchema = new Schema(
     tokenPassword: { type: String },
     fullname: { type: String, required: true },
     address: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
     pictureKey: { type: String },
     pictureKeyLow: { type: String },
   },

@@ -14,7 +14,7 @@ import ErrorHandler from '@helpers/errorHandler/index';
 
 // Init express
 const app = express();
-const dbUrl: any = 'mongodb://localhost/admin-service';
+const dbUrl: any = process.env.DATABASE;
 
 /************************************************************************************
  *                              Set basic express settings
