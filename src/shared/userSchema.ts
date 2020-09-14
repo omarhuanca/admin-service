@@ -10,4 +10,5 @@ export const userSchema = Joi.object().keys({
   phoneNumber: Joi.string().required(),
   pictureKey: Joi.string().allow(''),
   pictureKeyLow: Joi.string().allow(''),
+  rol: Joi.string().allow(''),
 });

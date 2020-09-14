@@ -4,7 +4,7 @@ import { omit, get } from 'lodash';
 import ErrorHandler from '@helpers/errorHandler';
 import SuccessHandler from '@helpers/successHandler';
 import UserService from '@services/UserService';
-import { IBaseUser } from '@models/user';
+import { IUser } from '@models/user';
 import logger from '@shared/Logger';
 
 interface IRequest extends Request {
@@ -17,10 +17,14 @@ const successHandler = new SuccessHandler();
 
 export const getAll = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const defaultStatus = get(req, 'query.status', true);
-    const criteria = {
-      status: defaultStatus
-    };
+    const queryStatus = get(req, 'query.status', true);
+    const criteria: any = {};
+    criteria.status = queryStatus
+
+    const queryRol = req.query.rol;
+    if (queryRol) {
+      criteria.rol = queryRol;
+    }
     const data = await service.findAll(criteria);
 
     successHandler.handleSuccess(200, 'fetch', res, next, data);
@@ -47,8 +51,8 @@ export const getOne = async (req: IRequest, res: Response, next: NextFunction) =
 
 export const create = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const user: IBaseUser = req.body as IBaseUser;
-    const data = await service.create(user);
+    const object: IUser = req.body as IUser;
+    const data = await service.create(object);
 
     successHandler.handleSuccess(200, 'created', res, next, omit(data, omitKeys));
   } catch(error) {

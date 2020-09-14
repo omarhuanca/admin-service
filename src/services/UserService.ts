@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 
 import UserDao from '@daos/UserDao';
 import logger from '@shared/Logger';
-import { IUser, IBaseUser } from '@models/user';
+import { IUser } from '@models/user';
 
 class UserService {
 
@@ -32,19 +32,22 @@ class UserService {
     }
   }
 
-  public async create(user: IBaseUser) {
+  public async create(object: IUser) {
     try {
-      const newPassword = await bcrypt.hash(user.password, this.saltRounds);
-      const newUser: IBaseUser = {
-        status: user.status,
-        email: user.email,
+      const newPassword = await bcrypt.hash(object.password, this.saltRounds);
+      const newObject: IUser = {
+        status: object.status,
+        email: object.email,
         password: newPassword,
-        fullname: user.fullname,
-        address: user.address,
-        phoneNumber: user.phoneNumber,
-      } as IBaseUser;
+        fullname: object.fullname,
+        address: object.address,
+        phoneNumber: object.phoneNumber,
+        pictureKey: object.pictureKey,
+        pictureKeyLow: object.pictureKeyLow,
+        rol: object.rol,
+      } as IUser;
 
-      return await this.dao.create(newUser);
+      return await this.dao.create(newObject);
     } catch (error) {
       logger.info('TCL: create -> e', error);
       throw error;
@@ -69,6 +72,7 @@ class UserService {
           phoneNumber: dataToUpdate.phoneNumber,
           pictureKey: dataToUpdate.pictureKey,
           pictureKeyLow: dataToUpdate.pictureKeyLow,
+          rol: dataToUpdate.rol,
         } as IUser;
 
         return await this.dao.update(criteria, updateUser, options);

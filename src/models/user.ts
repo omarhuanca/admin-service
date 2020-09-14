@@ -1,6 +1,6 @@
 import { Schema, Document, model } from 'mongoose';
 
-export interface IBaseUser extends Document {
+export interface IUser extends Document {
   status: boolean,
   email: string,
   password: string,
@@ -8,11 +8,9 @@ export interface IBaseUser extends Document {
   fullname: string,
   address: string,
   phoneNumber: string,
-};
-
-export interface IUser extends IBaseUser {
   pictureKey: string,
   pictureKeyLow: string,
+  rol: string,
 };
 
 const UserSchema = new Schema(
@@ -26,12 +24,13 @@ const UserSchema = new Schema(
     phoneNumber: { type: String, required: true },
     pictureKey: { type: String },
     pictureKeyLow: { type: String },
+    rol: { type: String },
   },
   {
     timestamps: true,
   }
 );
 
-const UserModel = model<IBaseUser>('User', UserSchema, 'user');
+const UserModel = model<IUser>('User', UserSchema, 'user');
 
 export default UserModel;

@@ -1,4 +1,4 @@
-import UserModel, { IBaseUser } from '@models/user';
+import UserModel, { IUser } from '@models/user';
 import ErrorHandler from '@helpers/errorHandler/index';
 import logger from '@shared/Logger';
 
@@ -22,9 +22,9 @@ class UserDao {
     }
   }
 
-  public async create(user: IBaseUser) {
+  public async create(object: IUser) {
     try {
-      return await UserModel.create(user);
+      return await UserModel.create(object);
     } catch (error) {
       logger.info('TCL: create -> error', error);
       throw error.statusCode ? error : new ErrorHandler(500, `${error.name} ${error.message}`);
